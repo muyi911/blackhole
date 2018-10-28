@@ -1,4 +1,11 @@
-import { app, BrowserWindow } from 'electron'
+import {
+  app,
+  BrowserWindow,
+  Menu,
+  Tray,
+  globalShortcut,
+  dialog
+} from 'electron'
 
 /**
  * Set `__static` path to static files in production
@@ -9,24 +16,90 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 let mainWindow
-const winURL = process.env.NODE_ENV === 'development'
-  ? `http://localhost:9080`
-  : `file://${__dirname}/index.html`
+const winURL = process.env.NODE_ENV === 'development' ?
+  `http://localhost:9080` :
+  `file://${__dirname}/index.html`
 
-function createWindow () {
+const path = require('path')
+const url = require('url')
+let mainWindowShow = true
+let appTray = null
+
+function createWindow() {
+  //Menu.setApplicationMenu(null)
+
   /**
    * Initial window options
    */
   mainWindow = new BrowserWindow({
     height: 563,
     useContentSize: true,
-    width: 1000
+    width: 1000,
+    frame: false
   })
 
   mainWindow.loadURL(winURL)
 
   mainWindow.on('closed', () => {
     mainWindow = null
+  })
+
+  // 绑定全局快捷键
+  globalShortcut.register('Alt+P', function () {
+    if (mainWindowShow) {
+      mainWindowShow = false
+      mainWindow.hide()
+    } else {
+      mainWindowShow = true
+      mainWindow.show()
+    }
+  })
+
+  globalShortcut.register('Alt+B', function () {
+    // mainWindow.loadURL('http://www.baidu.com')
+  })
+
+  // 托盘右键菜单
+  let trayMenuTemplate = [{
+    label: '退出',
+    click: function () {
+      mainWindow = null
+      app.quit()
+    }
+  }]
+
+  let trayIcon = path.join(__dirname, 'tray')
+  const contextMenu = Menu.buildFromTemplate(trayMenuTemplate)
+  appTray = new Tray(path.join(trayIcon, 'icon.ico'))
+  appTray.setToolTip('black hole')
+  appTray.setContextMenu(contextMenu)
+
+  appTray.on('click', function () {
+    mainWindow.show()
+  })
+
+  mainWindow.on('closed', (e) => {
+    mainWindow = null
+  })
+
+  mainWindow.on('close', (e) => {
+    if (mainWindow.isMinimized()) {
+      mainWindow = null
+    } else {
+      mainWindow.hide()
+      mainWindow.setSkipTaskbar(true)
+      e.preventDefault()
+    }
+  })
+
+  mainWindow.on('show', () => {
+    mainWindow.setSkipTaskbar(false)
+    appTray.setHighlightMode('always')
+  })
+
+  mainWindow.on('hide', () => {
+    mainWindow.setSkipTaskbar(true)
+    appTray.setHighlightMode('never')
   })
 }
 
