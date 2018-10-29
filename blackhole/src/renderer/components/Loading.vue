@@ -1,6 +1,5 @@
 <template>
     <div class="b_s_window" @click="jump">this is loading!</div>
-
 </template>
 
 <script>

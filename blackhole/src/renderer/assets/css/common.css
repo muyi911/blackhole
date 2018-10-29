@@ -110,6 +110,11 @@ table {
     box-sizing: border-box;
 }
 
+html, body{
+    height:100%;
+    width: 100%;
+}
+
 /*自定义的一些动画效果*/
 .bounce-in-fade-out-enter-active {
     animation: bounce-in .5s;

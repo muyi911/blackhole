@@ -7,6 +7,9 @@ import {
   dialog
 } from 'electron'
 
+const path = require('path')
+const url = require('url')
+
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -16,14 +19,19 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 let mainWindow
+let mainWindowShow = true
+let appTray = null
 const winURL = process.env.NODE_ENV === 'development' ?
   `http://localhost:9080` :
   `file://${__dirname}/index.html`
 
-const path = require('path')
-const url = require('url')
-let mainWindowShow = true
-let appTray = null
+// 独立的调用窗口
+let commandWindow
+let commandWindowShow = false
+const commandWinURL = process.env.NODE_ENV === 'development' ?
+  `http://localhost:9080/#/commandwindow` :
+  `file://${__dirname}/index.html`
+
 
 function createWindow() {
   //Menu.setApplicationMenu(null)
@@ -56,6 +64,7 @@ function createWindow() {
   })
 
   globalShortcut.register('Alt+B', function () {
+    createCommandWindow()
     // mainWindow.loadURL('http://www.baidu.com')
   })
 
@@ -83,13 +92,13 @@ function createWindow() {
   })
 
   mainWindow.on('close', (e) => {
-    if (mainWindow.isMinimized()) {
-      mainWindow = null
-    } else {
-      mainWindow.hide()
-      mainWindow.setSkipTaskbar(true)
-      e.preventDefault()
-    }
+    // if (mainWindow.isMinimized()) {
+    //   mainWindow = null
+    // } else {
+    mainWindow.hide()
+    mainWindow.setSkipTaskbar(true)
+    e.preventDefault()
+    // }
   })
 
   mainWindow.on('show', () => {
@@ -102,6 +111,28 @@ function createWindow() {
     appTray.setHighlightMode('never')
   })
 }
+
+// 命令行窗口
+function createCommandWindow() {
+  if (commandWindowShow) {
+    return;
+  } else {
+    commandWindow = new BrowserWindow({
+      height: 60,
+      width: 600,
+      frame: false,
+      backgroundColor: '#fff',
+    })
+    commandWindow.setSkipTaskbar(true)
+    commandWindow.loadURL(commandWinURL)
+    commandWindow.on('close', function () {
+      commandWindow = null
+    })
+  }
+}
+
+
+
 
 app.on('ready', createWindow)
 

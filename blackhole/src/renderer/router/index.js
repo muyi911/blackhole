@@ -27,6 +27,12 @@ export default new Router({
       path: '/clock',
       name: 'clock',
       component: require('@/components/Clock').default
+    },
+    {
+      path: '/commandwindow',
+      name: 'commandwindow',
+      component: require('@/components/CommandWindow').default
     }
+
   ]
 })

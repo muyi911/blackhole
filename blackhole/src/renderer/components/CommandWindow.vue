@@ -1,12 +1,10 @@
 <template>
-    <div class="command" @focusout="focusout">
-        <transition name="bounce-in-fade-out" @after-enter="transitionComplete" @after-leave="transitionComplete">
-            <div v-show="showCommand" class="transition-box">
-                <div class="command_input">
-                    <input type="text" v-model="command" id="command_line" @keyup.enter="run" placeholder="Enter Command">
-                </div>
+    <div id="command_window" @focusout="focusout">
+        <div v-show="showCommand" class="transition-box">
+            <div class="command_window_input">
+                <input type="text" v-model="command" id="command_window_line" @keyup.enter="run" placeholder="Enter Command">
             </div>
-        </transition>
+        </div>
     </div>
 </template>
 
@@ -14,26 +12,26 @@
 export default {
   data: () => ({
     showCommand: false,
-    command: ""
+    command: ''
   }),
   created: function() {
     var self = this;
 
     if (self.$route.name == "commandwindow") {
-      self.showCommand = false;
-    } else {
-      document.onkeydown = function(e) {
-        // 开启快捷键
-        if ("80" == e.keyCode && e.ctrlKey && e.shiftKey) {
-          self.showCommand = true;
-        }
-
-        // 退出快捷键
-        if ("27" == e.keyCode) {
-          self.showCommand = false;
-        }
-      };
+      self.showCommand = true;
     }
+
+    document.onkeydown = function(e) {
+      // 开启快捷键
+      if ("80" == e.keyCode && e.ctrlKey && e.shiftKey) {
+        self.showCommand = true;
+      }
+      
+      // 退出快捷键
+      if ("27" == e.keyCode) {
+        self.showCommand = false;
+      }
+    };
   },
   methods: {
     transitionComplete: function() {
@@ -68,19 +66,15 @@ export default {
 </script>
 
 <style>
-.command {
-  position: fixed;
-  top: 100px;
-  width: 100%;
-  text-align: center;
+#command_window {
 }
 
-.command_input {
+#command_window .command_window_input {
   width: 600px;
   margin: 0 auto;
 }
 
-.command_input input {
+#command_window .command_window_input input {
   border: 0;
   padding: 5px 20px;
   width: 100%;
@@ -90,7 +84,7 @@ export default {
   outline: none;
 }
 
-.command_input input {
+.command_window_input input {
   background: #000;
   height: 60px;
   line-height: 60px;
@@ -98,3 +92,4 @@ export default {
   opacity: 0.8;
 }
 </style>
+
