@@ -4,7 +4,8 @@ import {
   Menu,
   Tray,
   globalShortcut,
-  dialog
+  dialog,
+  ipcMain
 } from 'electron'
 
 const path = require('path')
@@ -32,18 +33,12 @@ const commandWinURL = process.env.NODE_ENV === 'development' ?
   `http://localhost:9080/#/commandwindow` :
   `file://${__dirname}/index.html`
 
-
 function createWindow() {
-  //Menu.setApplicationMenu(null)
-
-  /**
-   * Initial window options
-   */
   mainWindow = new BrowserWindow({
     height: 563,
     useContentSize: true,
-    width: 1000,
-    frame: false
+    width: 1000
+    //frame: false
   })
 
   mainWindow.loadURL(winURL)
@@ -65,7 +60,6 @@ function createWindow() {
 
   globalShortcut.register('Alt+B', function () {
     createCommandWindow()
-    // mainWindow.loadURL('http://www.baidu.com')
   })
 
   // 托盘右键菜单
@@ -77,7 +71,8 @@ function createWindow() {
     }
   }]
 
-  let trayIcon = path.join(__dirname, 'tray')
+  let trayRootPath = process.env.NODE_ENV !== 'development' ? global.__static : path.join(__dirname, '../../static/')
+  let trayIcon = path.join(trayRootPath, 'tray')
   const contextMenu = Menu.buildFromTemplate(trayMenuTemplate)
   appTray = new Tray(path.join(trayIcon, 'icon.ico'))
   appTray.setToolTip('black hole')
@@ -121,7 +116,7 @@ function createCommandWindow() {
       height: 60,
       width: 600,
       frame: false,
-      backgroundColor: '#fff',
+      transparent: true,
     })
     commandWindow.setSkipTaskbar(true)
     commandWindow.loadURL(commandWinURL)
@@ -130,9 +125,6 @@ function createCommandWindow() {
     })
   }
 }
-
-
-
 
 app.on('ready', createWindow)
 
@@ -153,17 +145,70 @@ app.on('activate', () => {
  *
  * Uncomment the following code below and install `electron-updater` to
  * support auto updating. Code Signing with a valid certificate is required.
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
+ * 
  */
+import {
+  autoUpdater
+} from 'electron-updater'
+const feedUrl = 'http://127.0.0.1:60/UPDATE/'; // 更新包位置
 
-/*
-import { autoUpdater } from 'electron-updater'
-
-autoUpdater.on('update-downloaded', () => {
-  autoUpdater.quitAndInstall()
-})
+// autoUpdater.on('update-downloaded', () => {
+//   autoUpdater.quitAndInstall()
+// })
 
 app.on('ready', () => {
-  if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
+  //if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
+  if (process.env.NODE_ENV === 'production') checkForUpdates()
 })
- */
+
+let checkForUpdates = () => {
+  let tips = {
+    error: '检查更新出错',
+    checking: '正在检查更新……',
+    updateAva: '检测到新版本，正在下载……',
+    updateNotAva: '现在使用的就是最新版本，不用更新',
+  }
+
+  // 配置安装包远程服务器
+  autoUpdater.setFeedURL(feedUrl)
+
+  // 下面是自动更新的整个生命周期所发生的事件
+  autoUpdater.on('error', (message) => {
+    sendUpdateMessage(JSON.stringify(message))
+  })
+
+  autoUpdater.on('checking-for-update', (message) => {
+    sendUpdateMessage(tips.checking)
+  })
+
+  autoUpdater.on('update-available', function (message) {
+    sendUpdateMessage(tips.updateAva)
+  })
+
+  autoUpdater.on('update-not-available', function (message) {
+    sendUpdateMessage(tips.updateNotAva)
+  })
+
+  // 更新下载进度事件
+  autoUpdater.on('download-progress', function (progressObj) {
+    sendUpdateMessage('downloadProgress', progressObj)
+  })
+
+  // 更新下载完成事件
+  autoUpdater.on('update-downloaded', function (event, releaseNotes, releaseName, releaseDate, updateUrl, quitAndUpdate) {
+    ipcMain.on('updateNow', (e, arg) => {
+      autoUpdater.quitAndInstall()
+    })
+    mainWindow.webContents.send('isUpdateNow')
+  })
+
+  ipcMain.on('checkForUpdate', () => {
+    //执行自动更新检查
+    autoUpdater.checkForUpdates()
+  })
+}
+
+// 主进程主动发送消息给渲染进程函数
+function sendUpdateMessage(text) {
+  mainWindow.webContents.send('message', text)
+}
