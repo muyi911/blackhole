@@ -1,13 +1,13 @@
 <template>
-    <div class="command" @focusout="focusout">
-        <transition name="bounce-in-fade-out" @after-enter="transitionComplete" @after-leave="transitionComplete">
-            <div v-show="showCommand" class="transition-box">
-                <div class="command_input">
-                    <input type="text" v-model="command" id="command_line" @keyup.enter="run" placeholder="Enter Command">
-                </div>
-            </div>
-        </transition>
-    </div>
+  <div class="command" @focusout="focusout">
+    <transition name="bounce-in-fade-out" @after-enter="transitionComplete" @after-leave="transitionComplete">
+      <div v-show="showCommand" class="transition-box">
+        <div class="command_input">
+          <input type="text" v-model="command" id="command_line" @keyup.enter="run" placeholder="Enter Command">
+        </div>
+      </div>
+    </transition>
+  </div>
 </template>
 
 <script>
@@ -18,22 +18,25 @@ export default {
   }),
   created: function() {
     var self = this;
-
-    if (self.$route.name == "commandwindow") {
+    var isWindow = self.$route.name == "commandwindow";
+    if (isWindow) {
       self.showCommand = false;
-    } else {
-      document.onkeydown = function(e) {
-        // 开启快捷键
-        if ("80" == e.keyCode && e.ctrlKey && e.shiftKey) {
-          self.showCommand = true;
-        }
-
-        // 退出快捷键
-        if ("27" == e.keyCode) {
-          self.showCommand = false;
-        }
-      };
     }
+    document.onkeydown = function(e) {
+      if (isWindow) {
+        return;
+      }
+
+      // 开启快捷键
+      if ("80" == e.keyCode && e.ctrlKey && e.shiftKey) {
+        self.showCommand = true;
+      }
+
+      // 退出快捷键
+      if ("27" == e.keyCode) {
+        self.showCommand = false;
+      }
+    };
   },
   methods: {
     transitionComplete: function() {

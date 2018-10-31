@@ -43,10 +43,6 @@ function createWindow() {
 
   mainWindow.loadURL(winURL)
 
-  mainWindow.on('closed', () => {
-    mainWindow = null
-  })
-
   // 绑定全局快捷键
   globalShortcut.register('Alt+P', function () {
     if (mainWindowShow) {
@@ -59,7 +55,15 @@ function createWindow() {
   })
 
   globalShortcut.register('Alt+B', function () {
-    createCommandWindow()
+    if (commandWindow) {
+      if (commandWindowShow) {
+        commandWindow.hide()
+      } else {
+        commandWindow.show()
+      }
+    } else {
+      createCommandWindow()
+    }
   })
 
   // 托盘右键菜单
@@ -105,24 +109,60 @@ function createWindow() {
     mainWindow.setSkipTaskbar(true)
     appTray.setHighlightMode('never')
   })
+
+  createCommandWindow()
 }
 
 // 命令行窗口
 function createCommandWindow() {
+  console.log(commandWindowShow)
   if (commandWindowShow) {
-    return;
+    if (commandWindow) {
+      commandWindow.hide()
+    }
   } else {
-    commandWindow = new BrowserWindow({
-      height: 60,
-      width: 600,
-      frame: false,
-      transparent: true,
-    })
-    commandWindow.setSkipTaskbar(true)
-    commandWindow.loadURL(commandWinURL)
-    commandWindow.on('close', function () {
-      commandWindow = null
-    })
+    if (!commandWindow) {
+      commandWindow = new BrowserWindow({
+        height: 600,
+        width: 600,
+        useContentSize: true,
+        frame: false,
+        transparent: true,
+        show: false,
+        alwaysOnTop: true
+      })
+
+      commandWindow.setSkipTaskbar(true)
+      commandWindow.loadURL(commandWinURL)
+      commandWindow.on('close', function () {
+        commandWindowShow = false
+        commandWindow = null
+      })
+
+      commandWindow.on('hide', function () {
+        commandWindowShow = false
+        commandWindow.webContents.send('hideCommandWindow')
+      })
+
+      commandWindow.on('show', function () {
+        commandWindowShow = true
+        commandWindow.webContents.send('showCommandWindow')
+      })
+
+      ipcMain.on('hideCommandWindow', () => {
+        if (commandWindow) {
+          commandWindow.hide()
+        }
+      })
+
+      ipcMain.on('showCommandWindow', () => {
+        if (commandWindow) {
+          commandWindow.show()
+        }
+      })
+    } else {
+      commandWindow.show()
+    }
   }
 }
 
@@ -139,6 +179,9 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
+
+
 
 /**
  * Auto Updater

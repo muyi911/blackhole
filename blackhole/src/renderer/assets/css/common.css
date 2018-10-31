@@ -117,20 +117,16 @@ html, body{
 
 /*自定义的一些动画效果*/
 .bounce-in-fade-out-enter-active {
-    animation: bounce-in .5s;
+    animation: bounce-in 2s;
 }
 
 .bounce-in-fade-out-leave-active {
-    animation: fade-out .3s;
+    animation: fade-out .1s;
 }
 
 @keyframes bounce-in {
     0% {
         transform: scale(0);
-    }
-
-    50% {
-        transform: scale(1.1);
     }
 
     100% {
