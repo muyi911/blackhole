@@ -110,9 +110,29 @@ table {
     box-sizing: border-box;
 }
 
-html, body{
-    height:100%;
+html,
+body,
+#app {
+    height: 100%;
     width: 100%;
+    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+}
+
+
+text-main {
+    color: #303133;
+}
+
+text-default {
+    color: #606266
+}
+
+text-minor {
+    color: #909399
+}
+
+text-light {
+    color: #C0C4CC
 }
 
 /*自定义的一些动画效果*/

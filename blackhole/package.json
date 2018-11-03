@@ -22,15 +22,18 @@
     "directories": {
       "output": "build"
     },
-    "publish": [{
-      "provider": "generic",
-      "url": "http://127.0.0.1:60/UPDATE/"
-    }],
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "http://127.0.0.1:60/UPDATE/"
+      }
+    ],
     "files": [
       "dist/electron/**/*"
     ],
     "dmg": {
-      "contents": [{
+      "contents": [
+        {
           "x": 410,
           "y": 150,
           "type": "link",
@@ -68,6 +71,7 @@
     "element-ui": "^2.4.9",
     "flipclock": "^0.10.0",
     "jquery": "^3.3.1",
+    "skplayer": "^3.0.8",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",

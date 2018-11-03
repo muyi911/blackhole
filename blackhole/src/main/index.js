@@ -115,7 +115,6 @@ function createWindow() {
 
 // 命令行窗口
 function createCommandWindow() {
-  console.log(commandWindowShow)
   if (commandWindowShow) {
     if (commandWindow) {
       commandWindow.hide()
