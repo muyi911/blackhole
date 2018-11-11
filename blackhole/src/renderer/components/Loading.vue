@@ -29,11 +29,10 @@ export default {
     //   }, timeOut);
     // }, timeOut);
 
-    console.log(self.$store.state);
-    if (self.$store.state.isLogin == false) {
+    if (self.$store.state.Counter.isLogin == false) {
       self.jumpTo("login");
     } else {
-      self.jumpTo("app");
+      self.jumpTo("apps");
     }
 
     // TODO 验证用户权限
