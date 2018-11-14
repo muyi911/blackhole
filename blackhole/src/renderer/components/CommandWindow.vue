@@ -7,12 +7,14 @@
 </template>
 
 <script>
+let win = require("electron").remote.getCurrentWindow();
 export default {
   data: () => ({
     command: ""
   }),
   created: function() {
     var self = this;
+
     document.onkeydown = function(e) {
       // 退出快捷键
       if ("27" == e.keyCode) {
@@ -26,6 +28,16 @@ export default {
 
     self.$electron.ipcRenderer.on("hideCommandWindow", () => {
       self.command = "";
+    });
+  },
+  mounted: function() {
+    // 实现窗口穿透点击
+    let el = document.getElementById("command_window");
+    el.addEventListener("mouseleave", () => {
+      win.setIgnoreMouseEvents(true, { forward: true });
+    });
+    el.addEventListener("mouseenter", () => {
+      win.setIgnoreMouseEvents(false);
     });
   },
   methods: {
@@ -45,7 +57,7 @@ export default {
       if (patt.test(self.command)) {
         var routeName = self.command.substring(5, self.command.length);
         self.$router.push(routeName);
-      } 
+      }
     }
   }
 };
@@ -72,7 +84,7 @@ export default {
   height: 60px;
   line-height: 60px;
   border-radius: 6px;
-  opacity: 0.8;
+  /* opacity: 0.8; */
 }
 </style>
 

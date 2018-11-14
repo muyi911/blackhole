@@ -122,15 +122,17 @@ function createCommandWindow() {
   } else {
     if (!commandWindow) {
       commandWindow = new BrowserWindow({
-        height: 600,
+        minHeight: 60,
         width: 600,
+        y:0,
         useContentSize: true,
         frame: false,
         transparent: true,
         show: false,
-        alwaysOnTop: true
+        alwaysOnTop: true,
+        resizable: false,
+        movable: false
       })
-
       commandWindow.setSkipTaskbar(true)
       commandWindow.loadURL(commandWinURL)
       commandWindow.on('close', function () {

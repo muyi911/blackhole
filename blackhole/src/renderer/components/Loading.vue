@@ -30,9 +30,9 @@ export default {
     // }, timeOut);
 
     if (self.$store.state.Counter.isLogin == false) {
-      self.jumpTo("login");
+      //self.jumpTo("login");
     } else {
-      self.jumpTo("apps");
+      //self.jumpTo("apps");
     }
 
     // TODO 验证用户权限
