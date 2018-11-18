@@ -4,6 +4,7 @@
     "main": {
       "presets": [
         ["env", {
+          "modules": false,
           "targets": {
             "node": 7
           }
@@ -28,5 +29,5 @@
       ]
     }
   },
-  "plugins": ["transform-runtime"]
+  "plugins": ["transform-runtime", "transform-remove-strict-mode"]
 }

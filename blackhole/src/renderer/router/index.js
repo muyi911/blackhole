@@ -1,5 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import http from '../../../static/utils/http';
+import {
+  getToken
+} from '../../../static/utils/auth'
 
 Vue.use(Router)
 
@@ -55,8 +59,27 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requireAuth)) {
-    if (true) {
-      next()
+    let token = getToken();
+    if (token) {
+      http.apiPost('/user/info', {}).then((res) => {
+        http.handleResponse(res, function (data) {
+          next()
+        }, function (res) {
+          next({
+            path: '/login',
+            query: {
+              redirect: to.fullPath
+            }
+          })
+        })
+      }).catch(() => {
+        next({
+          path: '/login',
+          query: {
+            redirect: to.fullPath
+          }
+        })
+      })
     } else {
       next({
         path: '/login',

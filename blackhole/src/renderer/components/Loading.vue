@@ -29,8 +29,8 @@ export default {
     //   }, timeOut);
     // }, timeOut);
 
-    if (self.$store.state.Counter.isLogin == false) {
-      //self.jumpTo("login");
+    if (self.$store.getters.isLogin == false) {
+      self.jumpTo("login");
     } else {
       //self.jumpTo("apps");
     }

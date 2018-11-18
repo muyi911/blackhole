@@ -23,17 +23,18 @@ let mainWindow
 let mainWindowShow = true
 let appTray = null
 const winURL = process.env.NODE_ENV === 'development' ?
-  `http://localhost:9080` :
+  `http://localhost:90` :
   `file://${__dirname}/index.html`
 
 // 独立的调用窗口
 let commandWindow
 let commandWindowShow = false
 const commandWinURL = process.env.NODE_ENV === 'development' ?
-  `http://localhost:9080/#/commandwindow` :
+  `http://localhost:90/#/commandwindow` :
   `file://${__dirname}/index.html`
 
 function createWindow() {
+  Menu.setApplicationMenu(null)
   mainWindow = new BrowserWindow({
     height: 563,
     useContentSize: true,
@@ -87,6 +88,7 @@ function createWindow() {
   })
 
   mainWindow.on('closed', (e) => {
+    appTray.
     mainWindow = null
   })
 

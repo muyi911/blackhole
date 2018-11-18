@@ -1,33 +1,28 @@
 const state = {
-  main: 0,
-  isLogin: true
+  isLogin: false
+}
+
+const getters = {
+  isLogin(state) {
+    return state.isLogin
+  }
 }
 
 const mutations = {
-  DECREMENT_MAIN_COUNTER(state) {
-    state.main--
-  },
-  INCREMENT_MAIN_COUNTER(state) {
-    state.main++
-  },
-  changeLogin(state, data) {
-    state.isLogin = data
+  changeLogin(state) {
+    state.isLogin = true
   }
 }
 
 const actions = {
-  someAsyncTask({
-    commit
-  }) {
-    // do something async
-    commit('INCREMENT_MAIN_COUNTER')
+  changeLogin(context) {
+    context.commit("changeLogin")
   }
 }
 
-
-
 export default {
   state,
+  getters,
   mutations,
   actions
 }
