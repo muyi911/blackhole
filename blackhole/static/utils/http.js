@@ -7,7 +7,6 @@ const http = {
     }
   },
   apiGet(url, data) {
-    url = this.handleUrl(url)
     return new Promise((resolve, reject) => {
       axios.get(url, data).then((response) => {
         resolve(response.data)
@@ -21,7 +20,6 @@ const http = {
     })
   },
   apiPost(url, data) {
-    url = this.handleUrl(url)
     return new Promise((resolve, reject) => {
       axios.post(url, data).then((response) => {
         resolve(response.data)
@@ -35,7 +33,6 @@ const http = {
     })
   },
   apiDelete(url, id) {
-    url = this.handleUrl(url)
     return new Promise((resolve, reject) => {
       axios.delete(url + id).then((response) => {
         resolve(response.data)
@@ -49,7 +46,6 @@ const http = {
     })
   },
   apiPut(url, id, obj) {
-    url = this.handleUrl(url)
     return new Promise((resolve, reject) => {
       axios.put(url + id, obj).then((response) => {
         resolve(response.data)

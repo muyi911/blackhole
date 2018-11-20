@@ -16,7 +16,7 @@ import '@/assets/css/common.css'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 
-axios.defaults.baseURL = '/'
+axios.defaults.baseURL = 'http://localhost:8081/api'
 axios.defaults.timeout = 1000 * 15
 axios.defaults.headers.authKey = Lockr.get('authKey')
 axios.defaults.headers.sessionId = Lockr.get('sessionId')

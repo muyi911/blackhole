@@ -15,20 +15,28 @@ const router = new Router({
     {
       path: '/',
       name: 'loading',
-      component: require('@/components/Loading').default
+      component: require('@/pages/Loading').default
     },
     {
       path: '/login',
       name: 'login',
-      component: require('@/components/Login').default
+      component: require('@/pages/Login').default
     },
     {
       path: '/apps',
       name: 'apps',
-      component: require('@/components/app').default,
+      component: require('@/pages/apps/Apps').default,
       meta: {
         requireAuth: true
-      }
+      },
+      children: [{
+        path: '/frequent',
+        name: 'frequent',
+        component: require('@/Apps/frequent/Frequent').default,
+        meta: {
+          requireAuth: true
+        }
+      }]
     },
     {
       path: '/music',
